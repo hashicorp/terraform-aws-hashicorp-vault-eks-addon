@@ -83,7 +83,7 @@ module "eks_blueprint_addons" {
   enable_amazon_eks_kube_proxy = true
 
   # HashiCorp Vault
-  enable_vault    = true
+  enable_vault = true
   vault_helm_config = {
     namespace = var.namespace
   }
