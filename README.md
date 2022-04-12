@@ -15,21 +15,11 @@
 
 If you would like to override any defaults with the chart, you can pass it via the `helm_config` variable.
 
-The following list highlights features the team has implemented or considering working on:
-
-- [X] Integrated storage for Vault server
-- [X] Vault agent injector enabled
-- [] Auto-unseal with a [KMS key for HashiCorp Vault](https://www.vaultproject.io/docs/configuration/seal/awskms)
-- [] Support HA Vault Deployment (ex. 3+ pods)
-- [] Support custom namespace
-- [] Support Vault CSI provider
-- [] Support Kubernetes auth method by default
-
 ### Unsealing Vault
 
 Once the add-on has been deployed, the Vault server can be unsealed using the following commands.
 
-> You will need to be in the `vault` namespace while running these commands, by default
+> You will need to be in the `vault` (Kubernetes) namespace while running these commands, by default
 
 You will first need to initialize the Vault server:
 
@@ -37,9 +27,9 @@ You will first need to initialize the Vault server:
 kubectl exec -it vault-0 -n vault -- vault operator init
 ```
 
-> Make note of the unseal keys and root token that get generated.
+Take note of the [unseal keys](https://www.vaultproject.io/docs/concepts/seal#seal-unseal) and [root token](https://www.vaultproject.io/docs/concepts/tokens#root-tokens) that get generated.
 
-Next, unseal the Vault server by providing at least 3 of these keys to unseal Vault before servicing requests.
+Next, unseal the Vault server by providing at least _3_ of these keys to unseal Vault before servicing requests.
 
 ```sh
 kubectl exec -it vault-0 -n vault -- vault operator unseal <key 1>
@@ -55,8 +45,12 @@ kubectl get pods -n vault | grep vault
 NAME | READY | STATUS | RESTARTS | AGE
 ---|---|---|---|---
 vault-0 | 1/1 | Running | 0 | 28m
-vault-agent-injector-f9d94786c-wh4kt | 1/1 | Running | 0 | 2d1h
+vault-agent-injector-f9d94786c-wh4kt | 1/1 | Running | 0 | 1m
 ```
+
+At this point, Vault can be used to store, access and deploy secrets to your application workloads.
+
+See [this guide](https://learn.hashicorp.com/tutorials/vault/getting-started-first-secret?in=vault/getting-started) for inspiration on how to get started.
 
 <!-- BEGIN_TF_DOCS -->
 ### Inputs
