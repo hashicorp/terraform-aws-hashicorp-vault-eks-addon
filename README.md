@@ -58,8 +58,8 @@ vault-0 | 1/1 | Running | 0 | 28m
 vault-agent-injector-f9d94786c-wh4kt | 1/1 | Running | 0 | 2d1h
 ```
 
-<!--- BEGIN_TF_DOCS --->
-<!--- END_TF_DOCS --->
+<!-- BEGIN_TF_DOCS -->
+<!-- END_TF_DOCS -->
 
 ## Author Information
 
