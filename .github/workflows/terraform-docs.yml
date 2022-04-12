@@ -16,7 +16,7 @@ jobs:
       - name: Render documentation and push changes back to branch
         uses: terraform-docs/gh-actions@v0.11.0
         with:
-          config-file: "../.terraform-docs.yml"
+          config-file: ".terraform-docs.yml"
           output-file: "README.md"
           output-method: inject
           git-push: true
