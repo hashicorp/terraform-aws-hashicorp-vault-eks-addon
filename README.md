@@ -59,6 +59,21 @@ vault-agent-injector-f9d94786c-wh4kt | 1/1 | Running | 0 | 2d1h
 ```
 
 <!-- BEGIN_TF_DOCS -->
+### Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| addon_context | Input configuration for the addon. | <pre>object({<br>    aws_caller_identity_account_id = string<br>    aws_caller_identity_arn        = string<br>    aws_eks_cluster_endpoint       = string<br>    aws_partition_id               = string<br>    aws_region_name                = string<br>    eks_cluster_id                 = string<br>    eks_oidc_issuer_url            = string<br>    eks_oidc_provider_arn          = string<br>    tags                           = map(string)<br>  })</pre> | n/a | yes |
+| helm_config | HashiCorp Vault Helm chart configuration. | `any` | `{}` | no |
+| manage_via_gitops | Determines if the add-on should be managed via GitOps. | `bool` | `false` | no |
+| vault_namespace | Kubernetes Namespace to deploy HashiCorp Vault in | `string` | `"vault"` | no |
+
+### Outputs
+
+| Name | Description |
+|------|-------------|
+| argocd_gitops_config | Configuration used for managing the add-on with ArgoCD |
+| merged_helm_config | (merged) Helm Config for HashiCorp Vault |
 <!-- END_TF_DOCS -->
 
 ## Author Information
