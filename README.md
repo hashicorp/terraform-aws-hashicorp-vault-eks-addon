@@ -42,10 +42,10 @@ Confirm that the Vault server is unsealed by checking the status of the Vault se
 ```sh
 kubectl get pods -n vault | grep vault
 
-NAME | READY | STATUS | RESTARTS | AGE
----|---|---|---|---
-vault-0 | 1/1 | Running | 0 | 28m
-vault-agent-injector-f9d94786c-wh4kt | 1/1 | Running | 0 | 1m
+NAME                                 | READY | STATUS  | RESTARTS | AGE
+-------------------------------------|-------|---------|----------|-----
+vault-0                              |  1/1  | Running | 0        | 28m
+vault-agent-injector-f9d94786c-wh4kt |  1/1  | Running | 0        | 1m
 ```
 
 At this point, Vault can be used to store, access and deploy secrets to your application workloads.
