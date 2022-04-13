@@ -71,9 +71,8 @@ module "eks_blueprints" {
 }
 
 module "eks_blueprint_addons" {
-  # TODO update to remote URL
-  #source         = "github.com/aws-samples/aws-eks-accelerator-for-terraform//modules/kubernetes-addons"
-  source = "../../../aws-eks-accelerator-for-terraform/modules/kubernetes-addons/"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
+  #source = "../../../aws-eks-accelerator-for-terraform/modules/kubernetes-addons/"
 
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
