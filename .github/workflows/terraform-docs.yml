@@ -15,8 +15,18 @@ jobs:
 
       - name: Render documentation and push changes back to branch
         uses: terraform-docs/gh-actions@v0.11.0
+        working-directory: ${{ matrix.dir }}
         with:
           config-file: ".terraform-docs.yml"
           output-file: "README.md"
           output-method: inject
           git-push: true
+
+      - name: Render documentation for `getting-started` example and push changes back to branch
+        uses: terraform-docs/gh-actions@v0.11.0
+        with:
+          config-file: "../../.terraform-docs.yml"
+          output-file: "README.md"
+          git-push: true
+          working-dir: "./blueprints/getting-started"
+

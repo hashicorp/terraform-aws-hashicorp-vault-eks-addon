@@ -72,7 +72,7 @@ See [this guide](https://learn.hashicorp.com/tutorials/vault/getting-started-fir
 
 ## Author Information
 
-This repository is maintained by the contributors listed on [GitHub](https://github.com/ksatirli/hashicorp-vault-eks-blueprints-addon/graphs/contributors).
+This repository is maintained by the contributors listed on [GitHub](https://github.com/hashicorp/terraform-aws-hashicorp-vault-eks-blueprints-addon/graphs/contributors).
 
 ## License
 
