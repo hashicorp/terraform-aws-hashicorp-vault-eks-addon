@@ -50,7 +50,7 @@ vault-agent-injector-f9d94786c-wh4kt |  1/1  | Running | 0        | 1m
 
 At this point, Vault can be used to store, access and deploy secrets to your application workloads.
 
-See [this guide](https://learn.hashicorp.com/tutorials/vault/getting-started-first-secret?in=vault/getting-started) for inspiration on how to get started.
+See [this guide](https://learn.hashicorp.com/tutorials/vault/getting-started-first-secret?in=vault/getting-started) for a detailed overview on how to get started.
 
 <!-- BEGIN_TF_DOCS -->
 ### Inputs
