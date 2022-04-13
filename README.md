@@ -1,10 +1,10 @@
-# HashiCorp Vault Blueprints Addon for AWS EKS
+# HashiCorp Vault Addon for AWS EKS
 
-> A technical preview that instantiates HashiCorp Vault in a Kubernetes cluster.
+> A technical preview that instantiates HashiCorp Vault in an AWS EKS cluster.
 
 ## Table of Contents
 
-- [HashiCorp Vault Blueprints Addon for AWS EKS](#hashicorp-vault-blueprints-addon-for-aws-eks)
+- [HashiCorp Vault Addon for AWS EKS](#hashicorp-vault-addon-for-aws-eks)
   - [Table of Contents](#table-of-contents)
   - [Requirements](#requirements)
   - [Usage](#usage)
