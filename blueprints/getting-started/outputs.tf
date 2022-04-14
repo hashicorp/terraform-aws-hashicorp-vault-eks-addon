@@ -31,8 +31,3 @@ output "kubectl_command_describe_secrets" {
   description = "kubectl command to describe Kubernetes Secrets"
   value       = "kubectl describe secrets --namespace=${var.namespace}"
 }
-
-#vault-token-swxwv
-#s.7XRG077l6q1unaFx6qYKbFTf
-#
-#KiH7f4cTvhAZZc2+wcI8P6bAvXn33+37QNGRHIzKET0=

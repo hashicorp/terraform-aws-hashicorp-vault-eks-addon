@@ -1,12 +1,11 @@
-# HashiCorp Vault Addon for AWS EKS
+# HashiCorp Vault Add-on for AWS EKS
 
-> A technical preview that instantiates HashiCorp Vault in an AWS EKS cluster.
+> Deploy HashiCorp Vault to AWS EKS Clusters with this add-on.
 
 ## Table of Contents
 
 - [HashiCorp Vault Addon for AWS EKS](#hashicorp-vault-addon-for-aws-eks)
   - [Table of Contents](#table-of-contents)
-  - [Requirements](#requirements)
   - [Usage](#usage)
   - [Author Information](#author-information)
   - [License](#license)
@@ -72,7 +71,7 @@ See [this guide](https://learn.hashicorp.com/tutorials/vault/getting-started-fir
 
 ## Author Information
 
-This repository is maintained by the contributors listed on [GitHub](https://github.com/hashicorp/terraform-aws-hashicorp-vault-eks-blueprints-addon/graphs/contributors).
+This repository is maintained by the contributors listed on [GitHub](https://github.com/hashicorp/terraform-aws-hashicorp-vault-eks-addon/graphs/contributors).
 
 ## License
 
