@@ -1,7 +1,7 @@
 variable "kubernetes_version" {
   type        = string
   description = "Kubernetes version to use for EKS Cluster"
-  default     = "1.21"
+  default     = "1.22"
 }
 
 variable "namespace" {
