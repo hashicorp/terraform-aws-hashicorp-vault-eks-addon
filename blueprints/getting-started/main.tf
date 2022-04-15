@@ -16,6 +16,25 @@ provider "aws" {
   # See https://registry.terraform.io/providers/hashicorp/aws/latest/docs#aws-configuration-reference for additional options
 }
 
+module "eks_blueprints" {
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints"
+
+  # EKS CLUSTER
+  cluster_version    = var.kubernetes_version
+  vpc_id             = module.aws_vpc.vpc_id
+  private_subnet_ids = module.aws_vpc.private_subnets
+
+  # EKS MANAGED NODE GROUPS
+  managed_node_groups = {
+    mg_m4l = {
+      node_group_name = "managed-ondemand"
+      instance_types  = ["m4.large"]
+      min_size        = "2"
+      subnet_ids      = module.aws_vpc.private_subnets
+    }
+  }
+}
+
 # See https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster
 data "aws_eks_cluster" "cluster" {
   name = module.eks_blueprints.eks_cluster_id
@@ -50,25 +69,6 @@ provider "helm" {
   # See https://registry.terraform.io/providers/hashicorp/helm/latest/docs#argument-reference for additional options
 }
 
-module "eks_blueprints" {
-  # TODO: rename to new URL
-  source = "github.com/aws-samples/aws-eks-accelerator-for-terraform"
-
-  # EKS CLUSTER
-  cluster_version    = var.kubernetes_version
-  vpc_id             = module.aws_vpc.vpc_id
-  private_subnet_ids = module.aws_vpc.private_subnets
-
-  # EKS MANAGED NODE GROUPS
-  managed_node_groups = {
-    mg_m4l = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m4.large"]
-      min_size        = "2"
-      subnet_ids      = module.aws_vpc.private_subnets
-    }
-  }
-}
 
 module "eks_blueprint_addons" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
@@ -83,6 +83,7 @@ module "eks_blueprint_addons" {
 
   # HashiCorp Vault
   enable_vault = true
+
   vault_helm_config = {
     namespace = var.namespace
   }
