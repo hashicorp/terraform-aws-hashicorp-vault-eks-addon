@@ -16,11 +16,11 @@ If you would like to override any defaults with the chart, you can pass it via t
 
 ### Unsealing Vault
 
-Once the add-on has been deployed, the Vault server can be unsealed using the following commands.
+Once the add-on has been deployed, you can unseal the Vault server using the following commands.
 
 > You will need to be in the `vault` (Kubernetes) namespace while running these commands, by default
 
-You will first need to initialize the Vault server:
+First, initialize the Vault server. This will return [unseal keys](https://www.vaultproject.io/docs/concepts/seal#seal-unseal) and [root token](https://www.vaultproject.io/docs/concepts/tokens#root-tokens). Store this in a safe place since you will use them to unseal the Vault server.
 
 ```sh
 kubectl exec -it vault-0 -n vault -- vault operator init
@@ -36,10 +36,15 @@ kubectl exec -it vault-0 -n vault -- vault operator unseal <key 2>
 kubectl exec -it vault-0 -n vault -- vault operator unseal <key 3>
  ```
 
-Confirm that the Vault server is unsealed by checking the status of the Vault server:
+Confirm that the Vault server is unsealed by checking the status of the Vault server.
 
 ```sh
 kubectl get pods -n vault | grep vault
+```
+
+This command will return a similar output to the following.
+
+```sh
 
 NAME                 | READY | STATUS  | RESTARTS | AGE
 ---------------------|-------|---------|----------|-----
@@ -47,9 +52,9 @@ vault-0              |  1/1  | Running | 0        | 28m
 vault-agent-injector |  1/1  | Running | 0        | 1m
 ```
 
-At this point, Vault can be used to store, access and deploy secrets to your application workloads.
+At this point, you can use Vault to store, access and deploy secrets to your application workloads.
 
-See [this guide](https://learn.hashicorp.com/tutorials/vault/getting-started-first-secret?in=vault/getting-started) for a detailed overview on how to get started.
+Refer to [this guide](https://learn.hashicorp.com/tutorials/vault/getting-started-first-secret?in=vault/getting-started) for a detailed overview on how to get started.
 
 <!-- BEGIN_TF_DOCS -->
 ### Inputs
