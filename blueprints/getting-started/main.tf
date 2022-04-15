@@ -20,9 +20,9 @@ module "eks_blueprints" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints"
 
   # EKS CLUSTER
-  cluster_version    = var.kubernetes_version
   vpc_id             = module.aws_vpc.vpc_id
   private_subnet_ids = module.aws_vpc.private_subnets
+  kubernetes_version = var.kubernetes_version
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
@@ -69,10 +69,8 @@ provider "helm" {
   # See https://registry.terraform.io/providers/hashicorp/helm/latest/docs#argument-reference for additional options
 }
 
-
 module "eks_blueprint_addons" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
-  #source = "../../../aws-eks-accelerator-for-terraform/modules/kubernetes-addons/"
 
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
