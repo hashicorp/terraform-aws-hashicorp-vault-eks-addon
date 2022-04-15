@@ -26,8 +26,6 @@ First, initialize the Vault server. This will return [unseal keys](https://www.v
 kubectl exec -it vault-0 -n vault -- vault operator init
 ```
 
-Take note of the [unseal keys](https://www.vaultproject.io/docs/concepts/seal#seal-unseal) and [root token](https://www.vaultproject.io/docs/concepts/tokens#root-tokens) that get generated.
-
 Next, unseal the Vault server by providing at least _3_ of these keys to unseal Vault before servicing requests.
 
 ```sh
