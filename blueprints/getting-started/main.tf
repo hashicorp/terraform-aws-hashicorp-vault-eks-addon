@@ -72,7 +72,6 @@ provider "helm" {
 
 module "eks_blueprint_addons" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
-  #source = "../../../aws-eks-accelerator-for-terraform/modules/kubernetes-addons/"
 
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
