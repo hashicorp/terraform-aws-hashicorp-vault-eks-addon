@@ -12,7 +12,9 @@
 
 ## Usage
 
-If you would like to override any defaults with the chart, you can pass it via the `helm_config` variable.
+If you would like to override any defaults with the chart, you can do so by passing the `helm_config` variable.
+
+For a more extensive example, see [blueprints/getting-started](./blueprints/getting-started/).
 
 ### Unsealing Vault
 

@@ -33,42 +33,7 @@ On successful completion, Terraform will display outputs containing URLs to the 
 
 These commands may be used to configure a local `vault` agent and intialize the server, as described in the next section.
 
-### Unsealing Vault
-
-Once the add-on has been deployed, the Vault server can be initialized using the following commands.
-
-> You will need to be in the `vault` (Kubernetes) namespace while running these commands.
-
-You will first need to initialize the Vault server:
-
-```sh
-kubectl exec -it vault-0 -n vault -- vault operator init
-```
-
-Take note of the [unseal keys](https://www.vaultproject.io/docs/concepts/seal#seal-unseal) and [root token](https://www.vaultproject.io/docs/concepts/tokens#root-tokens) that get generated.
-
-Next, unseal the Vault server by providing at least _3_ of these keys to unseal Vault before servicing requests.
-
-```sh
-kubectl exec -it vault-0 -n vault -- vault operator unseal <key 1>
-kubectl exec -it vault-0 -n vault -- vault operator unseal <key 2>
-kubectl exec -it vault-0 -n vault -- vault operator unseal <key 3>
- ```
-
-Confirm that the Vault server is unsealed by checking the status of the Vault server:
-
-```sh
-kubectl get pods -n vault | grep vault
-
-NAME                 | READY | STATUS  | RESTARTS | AGE
----------------------|-------|---------|----------|-----
-vault-0              |  1/1  | Running | 0        | 28m
-vault-agent-injector |  1/1  | Running | 0        | 1m
-```
-
-At this point, Vault can be used to store, access and deploy secrets to your application workloads.
-
-See [this guide](https://learn.hashicorp.com/tutorials/vault/getting-started-first-secret?in=vault/getting-started) for a detailed overview on how to get started.
+Refer to the root-level [README.md](../../readme.md) for an overview of the next steps.
 
 ## Variables and Outputs
 
