@@ -29,5 +29,11 @@ server:
         storage "raft" {
           path = "/vault/data"
         }
+%{ if kms_key_id != "" ~}
+        seal "awskms" {
+          region     = "${aws_region}"
+          kms_key_id = "${kms_key_id}"
+        }
 
+%{ endif ~}
         service_registration "kubernetes" {}
