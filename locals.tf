@@ -1,14 +1,21 @@
 locals {
+  name                 = "vault"
+  service_account_name = "${local.name}-sa"
+
   default_helm_values = [
-    templatefile("${path.module}/vault-config.tftpl.yml", {})
+    templatefile("${path.module}/vault-config.tftpl.yml",
+      {
+        kms_key_id = var.auto_unseal_kms_key_id
+        aws_region = var.addon_context.aws_region_name
+    })
   ]
 
   default_helm_config = {
-    name                       = "vault"
-    chart                      = "vault"
+    name                       = local.name
+    chart                      = local.name
     repository                 = "https://helm.releases.hashicorp.com"
     version                    = "0.19.0"
-    namespace                  = "vault"
+    namespace                  = var.vault_namespace
     timeout                    = "1200"
     create_namespace           = true
     set                        = []
@@ -45,6 +52,25 @@ locals {
     local.default_helm_config,
     var.helm_config
   )
+
+  set_values = [
+    {
+      name  = "server.serviceAccount.name"
+      value = local.service_account_name
+    },
+    {
+      name  = "server.serviceAccount.create"
+      value = false
+    }
+  ]
+
+  irsa_config =  var.auto_unseal ? {
+    kubernetes_namespace              = local.helm_config["namespace"]
+    kubernetes_service_account        = local.service_account_name
+    create_kubernetes_namespace       = try(local.helm_config["create_namespace"], true)
+    create_kubernetes_service_account = true
+    irsa_iam_policies                 = concat([aws_iam_policy.vault[0].arn], var.irsa_policies)
+  } : null
 
   argocd_gitops_config = {
     enable = true

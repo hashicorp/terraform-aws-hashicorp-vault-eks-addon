@@ -69,6 +69,13 @@ provider "helm" {
   # See https://registry.terraform.io/providers/hashicorp/helm/latest/docs#argument-reference for additional options
 }
 
+module "vault_unseal_kms" {
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/aws-kms?ref=v4.1.0"
+  alias       = "alias/${module.eks_blueprints.eks_cluster_id}-vault"
+  description = "Vault auto-unseal KMS Key for eks cluster ${local.cluster_name}"
+  policy      = null
+  tags        = {}
+}
 
 module "eks_blueprint_addons" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
@@ -82,7 +89,12 @@ module "eks_blueprint_addons" {
   enable_amazon_eks_kube_proxy = true
 
   # HashiCorp Vault
-  enable_vault = true
+  enable_vault                  = true
+  # turn on auto-unseal irsa config
+  vault_auto_unseal             = true
+  # pass unseal key info to module
+  vault_auto_unseal_kms_key_arn = module.vault_unseal_kms.key_arn
+  vault_auto_unseal_kms_key_id  = module.vault_unseal_kms.key_id
 
   vault_helm_config = {
     namespace = var.namespace
