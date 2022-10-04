@@ -1,5 +1,5 @@
 locals {
-  console_url_base = "https://${data.aws_region.current.name}.console.aws.amazon.com/eks/home?region=${data.aws_region.current.name}#/clusters/${data.aws_eks_cluster.cluster.name}"
+  console_url_base = "https://${local.region}.console.aws.amazon.com/eks/home?region=${local.region}#/clusters/${module.eks_blueprints.eks_cluster_id}"
 }
 
 output "console_url_cluster_overview" {
@@ -24,10 +24,10 @@ output "kubectl_command_configure" {
 
 output "kubectl_command_portforward" {
   description = "kubectl command to enable port-forwarding for port 8200"
-  value       = "kubectl port-forward service/vault-active 8200:8200 --namespace=${var.namespace}"
+  value       = "kubectl port-forward service/vault-active 8200:8200 --namespace=${var.vault_namespace}"
 }
 
 output "kubectl_command_describe_secrets" {
   description = "kubectl command to describe Kubernetes Secrets"
-  value       = "kubectl describe secrets --namespace=${var.namespace}"
+  value       = "kubectl describe secrets --namespace=${var.vault_namespace}"
 }
