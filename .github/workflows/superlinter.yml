@@ -24,5 +24,5 @@ jobs:
           VALIDATE_BASH: true
           VALIDATE_JSON: true
           VALIDATE_MD: true
-          VALIDATE_TERRAFORM: true
+          VALIDATE_TERRAFORM_TFLINT: true
           VALIDATE_YAML: true
