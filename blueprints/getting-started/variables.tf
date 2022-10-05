@@ -4,7 +4,7 @@ variable "cluster_version" {
   default     = "1.23"
 }
 
-variable "vault_namespace" {
+variable "namespace" {
   type        = string
   description = "Kubernetes Namespace to deploy HashiCorp Vault in"
   default     = "vault"

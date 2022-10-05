@@ -38,7 +38,7 @@ locals {
 ################################################################################
 
 module "eks_blueprints" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.12.1"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints"
 
   cluster_name    = local.name
   cluster_version = var.cluster_version
@@ -67,7 +67,7 @@ module "eks_blueprints" {
 ################################################################################
 
 module "eks_blueprint_addons" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.12.1"
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
 
   eks_cluster_id       = module.eks_blueprints.eks_cluster_id
   eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
@@ -82,7 +82,7 @@ module "eks_blueprint_addons" {
   # HashiCorp Vault
   enable_vault = true
   vault_helm_config = {
-    namespace = var.vault_namespace
+    namespace = var.namespace
   }
 
   tags = local.tags
