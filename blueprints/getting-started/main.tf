@@ -38,6 +38,9 @@ locals {
 ################################################################################
 
 module "eks_blueprints" {
+  # See https://github.com/aws-ia/terraform-aws-eks-blueprints/releases for latest version
+  # Example is not pinned to avoid update cycle conflicts between module and implementation
+  # tflint-ignore: terraform_module_pinned_source
   source = "github.com/aws-ia/terraform-aws-eks-blueprints"
 
   cluster_name    = local.name
@@ -67,6 +70,9 @@ module "eks_blueprints" {
 ################################################################################
 
 module "eks_blueprint_addons" {
+  # See https://github.com/aws-ia/terraform-aws-eks-blueprints/releases for latest version
+  # Example is not pinned to avoid update cycle conflicts between module and implementation
+  # tflint-ignore: terraform_module_pinned_source
   source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
 
   eks_cluster_id       = module.eks_blueprints.eks_cluster_id
