@@ -22,7 +22,7 @@ module "eks_blueprints" {
   # EKS CLUSTER
   vpc_id             = module.aws_vpc.vpc_id
   private_subnet_ids = module.aws_vpc.private_subnets
-  kubernetes_version = var.kubernetes_version
+  cluster_version    = var.kubernetes_version
 
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
