@@ -69,10 +69,8 @@ provider "helm" {
   # See https://registry.terraform.io/providers/hashicorp/helm/latest/docs#argument-reference for additional options
 }
 
-
 module "eks_blueprint_addons" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
-  #source = "../../../aws-eks-accelerator-for-terraform/modules/kubernetes-addons/"
 
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
