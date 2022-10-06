@@ -1,5 +1,5 @@
 locals {
-  console_url_base = "https://${data.aws_region.current.name}.console.aws.amazon.com/eks/home?region=${data.aws_region.current.name}#/clusters/${data.aws_eks_cluster.cluster.name}"
+  console_url_base = "https://${local.region}.console.aws.amazon.com/eks/home?region=${local.region}#/clusters/${module.eks_blueprints.eks_cluster_id}"
 }
 
 output "console_url_cluster_overview" {

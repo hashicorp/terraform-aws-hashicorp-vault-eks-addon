@@ -1,63 +1,66 @@
 resource "helm_release" "vault" {
-  count                      = var.manage_via_gitops ? 0 : 1
-  name                       = local.helm_config["name"]
-  chart                      = local.helm_config["chart"]
-  repository                 = local.helm_config["repository"]
-  repository_key_file        = local.helm_config["repository_key_file"]
-  repository_cert_file       = local.helm_config["repository_cert_file"]
-  repository_ca_file         = local.helm_config["repository_ca_file"]
-  repository_username        = local.helm_config["repository_username"]
-  repository_password        = local.helm_config["repository_password"]
-  version                    = local.helm_config["version"]
-  namespace                  = local.helm_config["namespace"]
-  verify                     = local.helm_config["verify"]
-  keyring                    = local.helm_config["keyring"]
-  timeout                    = local.helm_config["timeout"]
-  disable_webhooks           = local.helm_config["disable_webhooks"]
-  reuse_values               = local.helm_config["reuse_values"]
-  reset_values               = local.helm_config["reset_values"]
-  force_update               = local.helm_config["force_update"]
-  recreate_pods              = local.helm_config["recreate_pods"]
-  cleanup_on_fail            = local.helm_config["cleanup_on_fail"]
-  max_history                = local.helm_config["max_history"]
-  atomic                     = local.helm_config["atomic"]
-  skip_crds                  = local.helm_config["skip_crds"]
-  render_subchart_notes      = local.helm_config["render_subchart_notes"]
-  disable_openapi_validation = local.helm_config["disable_openapi_validation"]
-  wait                       = local.helm_config["wait"]
-  wait_for_jobs              = local.helm_config["wait_for_jobs"]
-  values                     = local.helm_config["values"]
-  dependency_update          = local.helm_config["dependency_update"]
-  replace                    = local.helm_config["replace"]
-  description                = local.helm_config["description"]
-  lint                       = local.helm_config["lint"]
-  create_namespace           = local.helm_config["create_namespace"]
+  count = var.manage_via_gitops ? 0 : 1
 
-  postrender {
-    binary_path = local.helm_config["postrender"]
-  }
+  name             = try(var.helm_config.name, "vault")
+  namespace        = try(var.helm_config.namespace, "vault")
+  create_namespace = try(var.helm_config.create_namespace, true)
+  description      = try(var.helm_config.description, null)
+  chart            = "vault"
+  version          = try(var.helm_config.version, "0.22.0")
+  repository       = try(var.helm_config.repository, "https://helm.releases.hashicorp.com")
+  values           = try(var.helm_config.values, file("${path.module}/vault-config.yml"))
 
-  # Dynamically set non-sensitive Helm configuration options
-  # See https://www.terraform.io/language/expressions/dynamic-blocks for more information
-  dynamic "set" {
-    iterator = each_item
-    for_each = local.helm_config["set"] == null ? [] : local.helm_config["set"]
+  timeout                    = try(var.helm_config.timeout, 1200)
+  repository_key_file        = try(var.helm_config.repository_key_file, null)
+  repository_cert_file       = try(var.helm_config.repository_cert_file, null)
+  repository_ca_file         = try(var.helm_config.repository_ca_file, null)
+  repository_username        = try(var.helm_config.repository_username, null)
+  repository_password        = try(var.helm_config.repository_password, null)
+  devel                      = try(var.helm_config.devel, null)
+  verify                     = try(var.helm_config.verify, null)
+  keyring                    = try(var.helm_config.keyring, null)
+  disable_webhooks           = try(var.helm_config.disable_webhooks, null)
+  reuse_values               = try(var.helm_config.reuse_values, null)
+  reset_values               = try(var.helm_config.reset_values, null)
+  force_update               = try(var.helm_config.force_update, null)
+  recreate_pods              = try(var.helm_config.recreate_pods, null)
+  cleanup_on_fail            = try(var.helm_config.cleanup_on_fail, null)
+  max_history                = try(var.helm_config.max_history, null)
+  atomic                     = try(var.helm_config.atomic, null)
+  skip_crds                  = try(var.helm_config.skip_crds, null)
+  render_subchart_notes      = try(var.helm_config.render_subchart_notes, null)
+  disable_openapi_validation = try(var.helm_config.disable_openapi_validation, null)
+  wait                       = try(var.helm_config.wait, null)
+  wait_for_jobs              = try(var.helm_config.wait_for_jobs, null)
+  dependency_update          = try(var.helm_config.dependency_update, null)
+  replace                    = try(var.helm_config.replace, null)
+  lint                       = try(var.helm_config.lint, null)
+
+  dynamic "postrender" {
+    for_each = can(var.helm_config.postrender_binary_path) ? [1] : []
 
     content {
-      name  = each_item.value.name
-      value = each_item.value.value
+      binary_path = var.helm_config.postrender_binary_path
     }
   }
 
-  # Dynamically set SENSITIVE Helm configuration options
-  # See https://www.terraform.io/language/expressions/dynamic-blocks for more information
-  dynamic "set_sensitive" {
-    iterator = each_item
-    for_each = local.helm_config["set_sensitive"] == null ? [] : local.helm_config["set_sensitive"]
+  dynamic "set" {
+    for_each = try(var.helm_config.set, [])
 
     content {
-      name  = each_item.value.name
-      value = each_item.value.value
+      name  = set.value.name
+      value = set.value.value
+      type  = try(set.value.type, null)
+    }
+  }
+
+  dynamic "set_sensitive" {
+    for_each = try(var.helm_config.set_sensitive, {})
+
+    content {
+      name  = set_sensitive.value.name
+      value = set_sensitive.value.value
+      type  = try(set_sensitive.value.type, null)
     }
   }
 }

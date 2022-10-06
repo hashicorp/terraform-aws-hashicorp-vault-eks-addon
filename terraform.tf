@@ -1,7 +1,10 @@
 terraform {
-  # This enables a function that is part of the optional attributes experiment.
-  # See https://www.terraform.io/language/expressions/type-constraints#experimental-optional-object-type-attributes for more information
-  experiments = [
-    module_variable_optional_attrs
-  ]
+  required_version = ">= 1.0"
+
+  required_providers {
+    helm = {
+      source  = "hashicorp/helm"
+      version = ">= 2.5.1"
+    }
+  }
 }

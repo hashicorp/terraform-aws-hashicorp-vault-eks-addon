@@ -1,78 +1,84 @@
-# See https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region
-data "aws_region" "current" {}
-
-# See https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones
-data "aws_availability_zones" "available" {
-  filter {
-    name   = "opt-in-status"
-    values = ["opt-in-not-required"]
-  }
-}
-
 provider "aws" {
-  region = data.aws_region.current.id
-  alias  = "default"
-
-  # See https://registry.terraform.io/providers/hashicorp/aws/latest/docs#aws-configuration-reference for additional options
-}
-
-module "eks_blueprints" {
-  source = "github.com/aws-ia/terraform-aws-eks-blueprints"
-
-  # EKS CLUSTER
-  cluster_version    = var.kubernetes_version
-  vpc_id             = module.aws_vpc.vpc_id
-  private_subnet_ids = module.aws_vpc.private_subnets
-
-  # EKS MANAGED NODE GROUPS
-  managed_node_groups = {
-    mg_m4l = {
-      node_group_name = "managed-ondemand"
-      instance_types  = ["m4.large"]
-      min_size        = "2"
-      subnet_ids      = module.aws_vpc.private_subnets
-    }
-  }
-}
-
-# See https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster
-data "aws_eks_cluster" "cluster" {
-  name = module.eks_blueprints.eks_cluster_id
-}
-
-# See https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster_auth
-data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks_blueprints.eks_cluster_id
+  region = local.region
 }
 
 provider "kubernetes" {
-  # This enables support for the `manifest` Resource
-  # See https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/guides/alpha-manifest-migration-guide#step-1-provider-configuration-blocks for more information
-  experiments {
-    manifest_resource = true
-  }
-
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
-
-  # See https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs#argument-reference for additional options
+  host                   = module.eks_blueprints.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.this.token
 }
 
 provider "helm" {
   kubernetes {
-    host                   = data.aws_eks_cluster.cluster.endpoint
-    token                  = data.aws_eks_cluster_auth.cluster.token
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
+    host                   = module.eks_blueprints.eks_cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    token                  = data.aws_eks_cluster_auth.this.token
   }
-
-  # See https://registry.terraform.io/providers/hashicorp/helm/latest/docs#argument-reference for additional options
 }
 
+data "aws_eks_cluster_auth" "this" {
+  name = module.eks_blueprints.eks_cluster_id
+}
+
+data "aws_availability_zones" "available" {}
+
+locals {
+  name = "vault"
+
+  region = "us-west-2"
+  azs    = slice(data.aws_availability_zones.available.names, 0, 3)
+
+  tags = {
+    GithubRepo = "github.com/hashicorp/terraform-aws-hashicorp-vault-eks-addon"
+  }
+}
+
+################################################################################
+# EKS Cluster
+################################################################################
+
+module "eks_blueprints" {
+  # See https://github.com/aws-ia/terraform-aws-eks-blueprints/releases for latest version
+  # Example is not pinned to avoid update cycle conflicts between module and implementation
+  # tflint-ignore: terraform_module_pinned_source
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints"
+
+  cluster_name    = local.name
+  cluster_version = var.cluster_version
+
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnets
+
+  managed_node_groups = {
+    default = {
+      node_group_name = "vault"
+
+      instance_types = ["m5.large"]
+      min_size       = 1
+      max_size       = 5
+      desired_size   = 2
+
+      subnet_ids = module.vpc.private_subnets
+    }
+  }
+
+  tags = local.tags
+}
+
+################################################################################
+# EKS Addons
+################################################################################
+
 module "eks_blueprint_addons" {
+  # See https://github.com/aws-ia/terraform-aws-eks-blueprints/releases for latest version
+  # Example is not pinned to avoid update cycle conflicts between module and implementation
+  # tflint-ignore: terraform_module_pinned_source
   source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons"
 
-  eks_cluster_id = module.eks_blueprints.eks_cluster_id
+  eks_cluster_id       = module.eks_blueprints.eks_cluster_id
+  eks_cluster_endpoint = module.eks_blueprints.eks_cluster_endpoint
+  eks_oidc_provider    = module.eks_blueprints.oidc_provider
+  eks_cluster_version  = module.eks_blueprints.eks_cluster_version
 
   # EKS Managed Add-ons
   enable_amazon_eks_vpc_cni    = true
@@ -81,12 +87,48 @@ module "eks_blueprint_addons" {
 
   # HashiCorp Vault
   enable_vault = true
-
   vault_helm_config = {
     namespace = var.namespace
   }
 
-  depends_on = [
-    module.eks_blueprints.managed_node_groups
-  ]
+  tags = local.tags
+}
+
+################################################################################
+# Supporting Resources
+################################################################################
+
+# See https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 3.0"
+
+  name = local.name
+  cidr = var.vpc_cidr
+
+  azs             = local.azs
+  public_subnets  = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 8, k)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(var.vpc_cidr, 8, k + 10)]
+
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+
+  # Manage so we can name
+  manage_default_network_acl    = true
+  default_network_acl_tags      = { Name = "${local.name}-default" }
+  manage_default_route_table    = true
+  default_route_table_tags      = { Name = "${local.name}-default" }
+  manage_default_security_group = true
+  default_security_group_tags   = { Name = "${local.name}-default" }
+
+  public_subnet_tags = {
+    "kubernetes.io/role/elb" = 1
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb" = 1
+  }
+
+  tags = local.tags
 }
