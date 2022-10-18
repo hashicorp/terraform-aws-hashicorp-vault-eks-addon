@@ -8,7 +8,7 @@ resource "helm_release" "vault" {
   chart            = "vault"
   version          = try(var.helm_config.version, "0.22.0")
   repository       = try(var.helm_config.repository, "https://helm.releases.hashicorp.com")
-  values           = try(var.helm_config.values, file("${path.module}/vault-config.yml"))
+  values           = try(var.helm_config.values, [file("${path.module}/vault-config.yml")])
 
   timeout                    = try(var.helm_config.timeout, 1200)
   repository_key_file        = try(var.helm_config.repository_key_file, null)
