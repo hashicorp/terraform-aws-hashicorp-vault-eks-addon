@@ -1,0 +1,37 @@
+---
+
+# See https://www.vaultproject.io/docs/platform/k8s/helm for more information
+global:
+  enabled: true
+injector:
+  enabled: true
+  metrics:
+    enabled: true
+server:
+  serviceAccount:
+    annotations:
+      "eks.amazonaws.com/role-arn": ${saRoleARN}
+  ha:
+    enabled: true
+    replicas: 2
+    config: |
+      ui = true
+
+      listener "tcp" {
+        tls_disable = 1
+        address = "[::]:8200"
+        cluster_address = "[::]:8201"
+      }
+
+      storage "dynamodb" {
+        ha_enabled    = "true"
+        region        = "${region}"
+        table         = "${dynamodbID}"
+      }
+
+      seal "awskms" {
+        region     = "${region}"
+        kms_key_id = "${kmsKeyID}"
+      }
+
+      service_registration "kubernetes" {}
