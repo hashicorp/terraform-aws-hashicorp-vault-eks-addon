@@ -90,15 +90,13 @@ module "eks_blueprints_kubernetes_addons" {
   enable_amazon_eks_coredns           = true
   enable_amazon_eks_kube_proxy        = true
   enable_aws_load_balancer_controller = true
+  
+  # optional, not required
   enable_karpenter                    = true
 
   # HashiCorp Vault
   enable_vault = true
   vault_helm_config = {
-    name       = "vault"
-    chart      = "vault"
-    repository = "https://helm.releases.hashicorp.com"
-    version    = "v0.23.0"
     values = [templatefile("${path.module}/vault-config.yml", {
       region       = var.region
       saRoleARN    = module.irsa.irsa_iam_role_arn
