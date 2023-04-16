@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
 variable "helm_config" {
   description = "HashiCorp Vault Helm chart configuration"
   type        = any
