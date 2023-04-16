@@ -9,12 +9,12 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
         with:
           ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Render documentation and push changes back to branch
-        uses: terraform-docs/gh-actions@v1.0.0
+        uses: terraform-docs/gh-actions@f6d59f89a280fa0a3febf55ef68f146784b20ba0 # v1.0.0
         with:
           config-file: ".terraform-docs.yml"
           output-file: "README.md"
@@ -22,7 +22,7 @@ jobs:
           git-push: true
 
       - name: Render documentation for `getting-started` example and push changes back to branch
-        uses: terraform-docs/gh-actions@v1.0.0
+        uses: terraform-docs/gh-actions@f6d59f89a280fa0a3febf55ef68f146784b20ba0 # v1.0.0
         with:
           config-file: "../../.terraform-docs.yml"
           output-file: "README.md"
