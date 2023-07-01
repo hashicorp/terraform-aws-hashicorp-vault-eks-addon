@@ -11,6 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
         with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Render documentation and push changes back to branch
@@ -21,7 +22,7 @@ jobs:
           output-method: inject
           git-push: true
 
-      - name: Render documentation for `getting-started` example and push changes back to branch
+      - name: Render documentation for `getting-started/v4` example and push changes back to branch
         uses: terraform-docs/gh-actions@f6d59f89a280fa0a3febf55ef68f146784b20ba0 # v1.0.0
         with:
           config-file: "../../../.terraform-docs.yml"
@@ -29,7 +30,7 @@ jobs:
           git-push: true
           working-dir: "./blueprints/getting-started/v4"
 
-      - name: Render documentation for `getting-started` example and push changes back to branch
+      - name: Render documentation for `getting-started/v5` example and push changes back to branch
         uses: terraform-docs/gh-actions@f6d59f89a280fa0a3febf55ef68f146784b20ba0 # v1.0.0
         with:
           config-file: "../../../.terraform-docs.yml"
