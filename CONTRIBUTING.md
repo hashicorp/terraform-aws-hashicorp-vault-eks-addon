@@ -4,7 +4,7 @@ This document provides guidelines for contributing to the module.
 
 ## Dependencies
 
-Please refer the [tool-versions file](.tool-versions) for more info on required tools
+Please refer the [tool-versions file](.tool-versions) for more info on required tools. These tools help validate the commits following best practices and prevent accidents.
 
 ## Linting and Formatting
 
