@@ -9,7 +9,7 @@ resource "helm_release" "vault" {
   create_namespace = try(var.helm_config.create_namespace, true)
   description      = try(var.helm_config.description, null)
   chart            = "vault"
-  version          = try(var.helm_config.version, "0.22.0")
+  version          = try(var.helm_config.version, "0.27.0")
   repository       = try(var.helm_config.repository, "https://helm.releases.hashicorp.com")
   values           = try(var.helm_config.values, [file("${path.module}/vault-config.yml")])
 
