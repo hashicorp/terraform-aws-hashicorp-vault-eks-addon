@@ -1,4 +1,4 @@
-# Copyright (c) HashiCorp, Inc.
+# Copyright IBM Corp. 2022, 2024
 # SPDX-License-Identifier: Apache-2.0
 
 variable "helm_config" {
